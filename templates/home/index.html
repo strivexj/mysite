@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block header %}
+{% block title%}
+  <title>strivexj's site</title>
+{% endblock title %}
+<div class='jumbotron'>
+    <h1>Welcome to my website.</h1>
+</div>
+{% endblock header %}
+
+{% block content %}
+<h2>
+    <a href="{% url 'account:user_register' %}">Register an account</a> to make
+    your own Learning Log, and list the topics you're learning about.
+</h2>
+
+<h2>
+    Whenever you learn something new about a topic, make an entry
+    summarizing what you've learned.
+</h2>
+{% endblock content %}
