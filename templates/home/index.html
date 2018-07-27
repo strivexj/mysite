@@ -12,11 +12,11 @@
 {% block content %}
 <h2>
     <a href="{% url 'account:user_register' %}">Register an account</a> to make
-    your own Learning Log, and list the topics you're learning about.
+    your own <a href="{% url 'article:article_titles' %}">blog</a>, and share what you've learned with others.
 </h2>
 
 <h2>
-    Whenever you learn something new about a topic, make an entry
+    Whenever you learn something new about a topic, make an article
     summarizing what you've learned.
 </h2>
 {% endblock content %}

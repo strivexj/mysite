@@ -21,5 +21,6 @@ urlpatterns = [
     path('', include(('home.urls', 'home'), namespace='home')),
     path('account/', include(('account.urls', 'account'), namespace='account')),
     path('blog/', include(('blog.urls', 'blog'), namespace='blog')),
-
+    path('article/', include(('article.urls', 'article'), namespace='article')),
+    path('timetable/', include(('timetable.urls', 'timetable'), namespace='timetable')),
 ]

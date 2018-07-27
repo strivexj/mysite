@@ -1,5 +1,5 @@
+{% load static %}
 {% load bootstrap3 %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,11 +7,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    {% load static %}
     <link href="{% static 'images/icon.png' %}" rel="SHORTCUT ICON">
     {% block title%} {% endblock title %}
     {% bootstrap_css %}
     {% bootstrap_javascript %}
+
     <style type="text/css">
         html, body {
             height: 100%
@@ -33,18 +33,21 @@
     </style>
 </head>
 <body>
-{%include "header.html"%}
-
+{% include 'header.html' %}
 <div class="container">
     <div class="content">
-        <div class="page-header">
-            {% block header %}{% endblock header %}
-        </div>
-        <div>
-            {% block content %}{% endblock content %}
-        </div>
+
+
+
+    <div class="col-md-2">
+        {% include 'article/leftslider.html' %}
+    </div>
+    <div class="col-md-10">
+        {% block content %}
+
+        {% endblock %}
+    </div>
     </div>
 </div>
-{%include "footer.html"%}
+{% include 'footer.html' %}
 </body>
-</html>
