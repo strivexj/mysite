@@ -10,8 +10,6 @@
     <link href="{% static 'images/icon.png' %}" rel="SHORTCUT ICON">
     {% block title%} {% endblock title %}
     {% bootstrap_css %}
-    {% bootstrap_javascript %}
-
     <style type="text/css">
         html, body {
             height: 100%
@@ -50,4 +48,6 @@
     </div>
 </div>
 {% include 'footer.html' %}
+
+{% bootstrap_javascript %}
 </body>
