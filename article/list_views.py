@@ -1,9 +1,7 @@
-# import redis
 import redis
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-# from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Count
 from django.http import HttpResponse
@@ -88,11 +86,21 @@ def like_article(request):
     if article_id and action:
         try:
             article = ArticlePost.objects.get(id=article_id)
+            liked = ArticlePost.objects.filter(users_like=request.user, id=article_id)
+
             if action == "like":
-                article.users_like.add(request.user)
-                return HttpResponse("1")
+                if liked:
+                    return HttpResponse("1")
+                else:
+                    article.users_like.add(request.user)
+                    return HttpResponse("2")
             else:
-                article.users_like.remove(request.user)
-                return HttpResponse("2")
+                if liked:
+                    article.users_like.remove(request.user)
+                    return HttpResponse("4")
+                else:
+                    article.users_like.remove(request.user)
+                    return HttpResponse("3")
+
         except:
             return HttpResponse("no")

@@ -16,8 +16,9 @@
                 <a href="{% url 'article:author_articles' article.author.username %}">
                     {{ article.author.username }}
                 </a>
-                <span style="margin-left:20px" class="glyphicon glyphicon-thumbs-up">{{ total_likes }} like{{ total_likes | pluralize }}</span>
+                <span style="margin-left:20px" class="glyphicon glyphicon-thumbs-up"><span id="likeCount">{{ total_likes }}</span>like{{ total_likes | pluralize }}</span>
                 <span style="margin-left: 20px">{{ total_views }} view{{ total_views | pluralize }}</span>
+                <span style="margin-left: 20px">Last Updated: {{ article.updated }}</span>
             </p>
             <p><span style="margin-right: 10px"><strong>Tags:</strong></span> {{ article.article_tag.all | join:", "}}</p>
         </header>
@@ -61,7 +62,7 @@
             <h3><span class="glyphicon glyphicon-send"></span>看文章，发评论，不要沉默</h3>
             <form action="." method="post" class="form-horizontal" role="form">{% csrf_token %}
                 <div class="form-group">
-                    <label for="inputEmail3" class="col-sm-2 control-label">评论员</label>
+                    <label for="inputEmail3" class="col-sm-2 control-label">昵称</label>
                     <div class="col-sm-10">
                         {{ comment_form.commentator}}
                     </div>
@@ -129,10 +130,8 @@
 <script src='{% static "editor/lib/raphael.min.js" %}'></script>
 <script src='{% static "editor/lib/underscore.min.js" %}'></script>
 <script src='{% static "editor/lib/sequence-diagram.min.js" %}'></script>
-<script src='{% static "editor/lib/flowchart.min.js" %}''></script>
-<
-script
-src = '{% static "editor/lib/jquery.flowchart.min.js" %}' ></script>
+<script src='{% static "editor/lib/flowchart.min.js" %}'></script>
+<script src='{% static "editor/lib/jquery.flowchart.min.js" %}'></script>
 <script src='{% static "editor/editormd.js" %}'></script>
 <script type="text/javascript" src="{% static 'js/layer.js'%}"></script>
 <script type="text/javascript">
@@ -153,12 +152,19 @@ src = '{% static "editor/lib/jquery.flowchart.min.js" %}' ></script>
             type: "POST",
             data: {"id": id, "action": action},
             success: function (e) {
-                if (e == "1") {
+                var x=document.getElementById("likeCount").innerHTML;
+                if (e == "2") {
                     layer.msg("感谢点赞");
-                    window.location.reload();
-                } else {
+                    x=parseInt(x)+1;
+                    document.getElementById("likeCount").innerHTML=x;
+                } else if(e == "4"){
                     layer.msg("我会继续努力");
-                    window.location.reload();
+                    x=parseInt(x)-1;
+                    document.getElementById("likeCount").innerHTML=x;
+                }else if(e == "1"){
+                    layer.msg("你已经点过赞了哦");
+                }else if(e == "3"){
+                    layer.msg("你之前没有点赞哦");
                 }
             },
         });

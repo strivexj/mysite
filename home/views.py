@@ -10,7 +10,7 @@ def index(request):
 def timetable(request):
     content = {
         "appname": "Timetable",
-        "version": "201",
+        "version": "200",
         "title": "新版本(V2.0.0)",
         "force": "100",
         "updateurl": "https://www.strivexj.com/timetable/tt.apk",

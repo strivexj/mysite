@@ -35,5 +35,3 @@ urlpatterns = [
     url(r'^edit-my-information/$', views.myself_edit, name="edit_my_information"),
     url(r'^my-image/$', views.my_image, name="my_image"),
 ]
-
-# "subject_template_name":"account/password_reset_subject.txt",

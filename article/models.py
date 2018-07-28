@@ -1,7 +1,9 @@
+import markdown
 from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+
 from slugify import slugify
 
 
@@ -33,6 +35,8 @@ class ArticlePost(models.Model):
     updated = models.DateTimeField(auto_now=True)
     users_like = models.ManyToManyField(User, related_name="articles_like", blank=True)
     article_tag = models.ManyToManyField(ArticleTag, related_name='article_tag', blank=True)
+
+    # abstract = models.CharField(max_length=300, default=markdown.markdown(body[:70]))
 
     class Meta:
         # ordering = ("title",)
