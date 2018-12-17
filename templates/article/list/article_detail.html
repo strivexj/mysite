@@ -18,6 +18,7 @@
                 </a>
                 <span style="margin-left:20px" class="glyphicon glyphicon-thumbs-up"><span id="likeCount">{{ total_likes }}</span>like{{ total_likes | pluralize }}</span>
                 <span style="margin-left: 20px">{{ total_views }} view{{ total_views | pluralize }}</span>
+                <span style="margin-left: 20px"> {{article.body| count_word}} words</span>
                 <span style="margin-left: 20px">Last Updated: {{ article.updated }}</span>
             </p>
             <p><span style="margin-right: 10px"><strong>Tags:</strong></span> {{ article.article_tag.all | join:", "}}</p>
@@ -25,10 +26,14 @@
 
         <link rel="stylesheet" href="{% static 'editor/css/editormd.preview.css' %}"/>
         <div id='editormd-view'>
+
+        <textarea id="append-test" style="display:none;">
+{{ article.body }}
+	    </textarea>
             <!--textarea id="append-test" style="display:none;">
     {{ article.body }}
             </textarea-->
-            {{ article.body | markdown }}
+            <!--{{ article.body | markdown }}-->
         </div>
         <div>
             <p class="text-center">
@@ -36,7 +41,7 @@
                         class="glyphicon glyphicon-thumbs-up">like</span></a>
                 <a onclick="like_article({{article.id}}, 'unlike')" href="#"><span
                         style="margin-left: 15px;"
-                        class="glyphicon glyphicon-thumbs-down">unlike</span></a>
+                        class="glyphicon glyphicon-thumbs-down">dislike</span></a>
             </p>
         </div>
         <div>
@@ -170,6 +175,7 @@
         });
     }
 </script>
+<link href="{% static 'css/pygments.css' %}" rel="stylesheet">
 {% endwith %}
 {% endblock %}
 

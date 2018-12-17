@@ -3,7 +3,7 @@
   <component name="WebServers">
     <option name="servers">
       <webServer id="ac1fc4e9-6268-4ddc-a184-5fce47caf5e1" name="mysite" url="http://202.182.117.217">
-        <fileTransfer host="202.182.117.217" port="22" rootFolder="/home/wwwroot/www.strivexj.com" accessType="SFTP">
+        <fileTransfer host="202.182.117.217" port="22" rootFolder="/home/wwwroot/strivexj.com" accessType="SFTP">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" />
           </advancedOptions>

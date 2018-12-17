@@ -15,6 +15,11 @@ def total_articles():
     return ArticlePost.objects.count()
 
 
+@register.filter(name='count_word')
+def total_words(text):
+    return len(re.split(r" |;|,", text))
+
+
 @register.simple_tag
 def author_total_articles(user):
     return user.article.count()
@@ -34,16 +39,14 @@ def most_commented_articles(n=3):
 
 @register.filter(name='markdown')
 def markdown_filter(text):
-    return mark_safe(markdown.markdown(text))
+    return mark_safe(markdown.markdown(text, ['extra', 'codehilite', 'toc']))
 
 
 @register.filter(name='markdownabstract')
 def markdown_filter_abstract(text):
-    # 去掉p标签和单引号
     content_text1 = text.replace('<p>', '').replace('</p>', '').replace('\'', '')
-    # 去掉图片链接
-    content_text2 = re.sub('!\[\]\((.*?)\)', '', content_text1)
-    # 去掉markdown标签
+    content_text2 = re.sub('!\[(.*?)\]\((.*?)\)', '', content_text1)
+    content_text2 = re.sub('\[(.*?)\]\((.*?)\)', '', content_text2)
     pattern = '[\\\`\*\_\[\]\#\+\-\!\>]'
     content_text3 = re.sub(pattern, '', content_text2)
-    return content_text3
+    return content_text3[:150] + "......"
