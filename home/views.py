@@ -1,13 +1,40 @@
 import os
 from json import dumps
 
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
-
-
 # Create your views here.
+from django.views.decorators.csrf import csrf_exempt
+
+from timetable.models import CoursesHtml
+from timetable.serializers import PostSerializer
+
+
 def index(request):
     return render(request, 'home/index.html')
+
+
+@csrf_exempt
+def list(request):
+    """
+    List all code snippets, or create a new snippet.
+    """
+    if request.method == 'GET':
+        snippets = CoursesHtml.objects.all()
+        serializer = PostSerializer(snippets, many=True)
+
+        return JsonResponse(serializer.data, safe=False)
+
+    elif request.method == 'POST':
+        data = {}
+        data['school'] = request.POST['school']
+        data['type'] = request.POST['type']
+        data['html'] = request.POST['html']
+        serializer = PostSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
 
 
 def timetable(request):
@@ -17,7 +44,7 @@ def timetable(request):
     content["title"] = '新版本(V2.4.5)'
     content["force"] = 139
     content["type"] = 0
-    content["alipay"]="""563049812"""
+    content["alipay"] = """563049812"""
     content["positiveButtonText"] = "下载"
     content["updateurl"] = 'https://www.coolapk.com/apk/com.strivexj.timetable'
     content[
@@ -201,8 +228,6 @@ def tv_series_list(request):
     }
 
     mlist.append(tv)
-
-
 
     return HttpResponse(dumps(mlist, ensure_ascii=False),
 
