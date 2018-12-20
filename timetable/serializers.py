@@ -6,4 +6,4 @@ from timetable.models import CoursesHtml
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = CoursesHtml
-        fields = ('school', 'type', 'html')
+        fields = ('school', 'type', 'url', 'html')

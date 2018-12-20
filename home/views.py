@@ -6,7 +6,8 @@ from django.shortcuts import render
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt
 
-from timetable.models import CoursesHtml
+from home.models import LinkGameRanking
+from home.serializers import LinkGameRankingSerializer
 from timetable.serializers import PostSerializer
 
 
@@ -20,20 +21,64 @@ def list(request):
     List all code snippets, or create a new snippet.
     """
     if request.method == 'GET':
-        snippets = CoursesHtml.objects.all()
-        serializer = PostSerializer(snippets, many=True)
-
-        return JsonResponse(serializer.data, safe=False)
+        return JsonResponse({"code": 400}, status=400)
+        # snippets = CoursesHtml.objects.all()
+        # serializer = PostSerializer(snippets, many=True)
+        # return JsonResponse(serializer.data, safe=False)
 
     elif request.method == 'POST':
         data = {}
         data['school'] = request.POST['school']
         data['type'] = request.POST['type']
         data['html'] = request.POST['html']
+        data['url'] = request.POST['url']
         serializer = PostSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
+            return JsonResponse({"code": 201}, status=201)
+        return JsonResponse(serializer.errors, status=400)
+
+
+@csrf_exempt
+def linkGameRanking(request):
+    max = 9
+    """
+    List all code snippets, or create a new snippet.
+    """
+    if request.method == 'GET':
+        rankings = LinkGameRanking.objects.all()
+        serializer = LinkGameRankingSerializer(rankings, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+    elif request.method == 'POST':
+
+        data = dict()
+        data['username'] = request.POST['username']
+        data['type'] = request.POST['type']
+        data['record'] = request.POST['record']
+        data['date'] = request.POST['date']
+
+        rankings = LinkGameRanking.objects.filter(type=data['type'])
+        if len(rankings) > max and int(data['record']) >= rankings[len(rankings) - 1].record:
+            return JsonResponse({"code": 201}, status=201)
+
+        if len(rankings) > max:
+            rankings[len(rankings) - 1].delete()
+
+        try:
+            aRecord = LinkGameRanking.objects.get(username=data['username'], type=data['type'])
+        except:
+            aRecord = None
+
+        serializer = LinkGameRankingSerializer(data=data)
+        if serializer.is_valid():
+            if aRecord is not None:
+                if aRecord.record > int(data['record']):
+                    aRecord.delete()
+                else:
+                    return JsonResponse({"code": 201}, status=201)
+            serializer.save()
+            return JsonResponse({"code": 201}, status=201)
         return JsonResponse(serializer.errors, status=400)
 
 

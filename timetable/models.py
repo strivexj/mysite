@@ -1,10 +1,12 @@
 from django.db import models
+from django.utils import timezone
 
 
 class CoursesHtml(models.Model):
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(default=timezone.now)
     school = models.CharField(max_length=25)
     type = models.CharField(max_length=10)
+    url = models.CharField(max_length=100)
     html = models.TextField()
 
     class Meta:
