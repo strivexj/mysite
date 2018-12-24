@@ -12,4 +12,7 @@ urlpatterns = [
     url(r'adaptationList$', views.adaptation_list, name='adaptation_list'),
     url(r'^adaptationform$', views.adaptation_form, name='adaptation_form'),
     url(r'^adaptationdetail/(?P<id>\d+)$', views.adaptation_detail, name='adaptation_detail'),
+    url(r'^vaild/(?P<id>\d+)$', views.vaild, name='vaild'),
+    url(r'^adapted/(?P<id>\d+)$', views.adapted, name='adapted'),
+    url(r'^delete/(?P<id>\d+)$', views.delete, name='delete'),
 ]

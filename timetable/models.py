@@ -5,12 +5,14 @@ from django.utils import timezone
 class CoursesHtml(models.Model):
     created = models.DateTimeField(default=timezone.now)
     school = models.CharField(max_length=25)
-    type = models.CharField(max_length=10, default='adaptation')
+    type = models.CharField(max_length=10, default='Adaptation')
     url = models.CharField(max_length=100, default='#')
     html = models.TextField()
+    vaild = models.BooleanField(default=False)
+    adapted = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ("-created",)
+        ordering = ("-created", "-adapted", "-vaild")
 
     def __str__(self):
         return self.school

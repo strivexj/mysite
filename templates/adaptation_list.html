@@ -66,15 +66,23 @@
 {% endblock %}
 {% block content %}
 <div class="row text-center vertical-middle-sm">
-    <h1>Adaptation List</h1>
+    <h2>课表申请适配列表</h2>
 </div>
 <div class="container">
     <ul id="faq">
         {% for adaptation in adaptations %}
         <li>
             <dl>
-                <dt class="question"><a href="{{adaptation.url}}"> {{adaptation.school}} </a> <a
-                        href="/adaptationdetail/{{adaptation.id}}#bottom"> {{adaptation.type}} </a></dt>
+                <dt class="question"><a href="{{adaptation.url}}"> {{adaptation.school}} &nbsp;&nbsp;&nbsp;</a>
+                    <a href="/adaptationdetail/{{adaptation.id}}#bottom"> {{adaptation.type}}&nbsp;&nbsp;&nbsp; </a>
+                    <a href="/vaild/{{adaptation.id}}?origin={{adaptation.vaild}}">
+                        vaild:{{adaptation.vaild}}&nbsp;&nbsp;&nbsp; </a>
+                    <a href="/adapted/{{adaptation.id}}?origin={{adaptation.adapted}}">
+                        adapted:{{adaptation.adapted}} &nbsp;&nbsp;&nbsp;</a>
+
+                    <a href="/delete/{{adaptation.id}}">
+                        delete </a>
+                </dt>
             </dl>
         </li>
         {% endfor %}

@@ -1,9 +1,10 @@
 import os
 from json import dumps
 
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 # Create your views here.
+from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
 from home.models import LinkGameRanking
@@ -45,6 +46,37 @@ def adaptation_detail(request, id):
     adaptation = get_object_or_404(CoursesHtml, id=id)
     return render(request, "adaptation_detail.html",
                   {"adaptation": adaptation})
+
+
+def adapted(request, id):
+    if request.GET['origin'] == "True":
+        new = False
+    else:
+        new = True
+    adaptation = get_object_or_404(CoursesHtml, id=id)
+    adaptation.adapted = new
+    adaptation.save()
+    return HttpResponseRedirect("/adaptationList?pw=strivexjj123")
+    # return HttpResponse("Succeed.")
+
+
+def vaild(request, id):
+    if request.GET['origin'] == "True":
+        new = False
+    else:
+        new = True
+    adaptation = get_object_or_404(CoursesHtml, id=id)
+    adaptation.vaild = new
+    adaptation.save()
+    return HttpResponseRedirect("/adaptationList?pw=strivexjj123")
+    # return HttpResponse("Succeed.")
+
+
+def delete(request, id):
+    adaptation = get_object_or_404(CoursesHtml, id=id)
+    adaptation.delete()
+    return HttpResponseRedirect("/adaptationList?pw=strivexjj123")
+    # return HttpResponseRedirect(reverse("home:adaptation_list", args={'pw': 'strivexjj123'}))
 
 
 @csrf_exempt
