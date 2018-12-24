@@ -2,17 +2,49 @@ import os
 from json import dumps
 
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt
 
 from home.models import LinkGameRanking
 from home.serializers import LinkGameRankingSerializer
+from timetable.forms import AdaptationForm
+from timetable.models import CoursesHtml
 from timetable.serializers import PostSerializer
 
 
 def index(request):
     return render(request, 'home/index.html')
+
+
+def adaptation_form(request):
+    if request.method == "POST":
+        adaptation_form = AdaptationForm(request.POST)
+        if adaptation_form.is_valid():
+            adaptation_form.save()
+            return HttpResponse("Succeed.")
+        else:
+            return HttpResponse("Sorry, something went wrong.")
+    else:
+        adaptation_form = AdaptationForm()
+        return render(request, "adaptation_form.html",
+                      {"form": adaptation_form})
+
+
+def adaptation_list(request):
+    if request.GET['pw'] is None or request.GET['pw'] != 'strivexjj123':
+        return JsonResponse({"code": 400}, status=400)
+
+    adaptations = CoursesHtml.objects.all()
+
+    return render(request, "adaptation_list.html",
+                  {"adaptations": adaptations})
+
+
+def adaptation_detail(request, id):
+    adaptation = get_object_or_404(CoursesHtml, id=id)
+    return render(request, "adaptation_detail.html",
+                  {"adaptation": adaptation})
 
 
 @csrf_exempt
