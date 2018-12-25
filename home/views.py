@@ -11,7 +11,7 @@ from home.serializers import LinkGameRankingSerializer
 from home.tool import getSchoolName
 from timetable.forms import AdaptationForm
 from timetable.models import CoursesHtml
-from timetable.serializers import PostSerializer
+from timetable.serializers import PostSerializer, PostSerializer2
 
 
 def index(request):
@@ -60,13 +60,13 @@ def adapted(request, id):
     # return HttpResponse("Succeed.")
 
 
-def vaild(request, id):
+def valid(request, id):
     if request.GET['origin'] == "True":
         new = False
     else:
         new = True
     adaptation = get_object_or_404(CoursesHtml, id=id)
-    adaptation.vaild = new
+    adaptation.valid = new
     adaptation.save()
     return HttpResponseRedirect("/adaptationList?pw=strivexjj123")
     # return HttpResponse("Succeed.")
@@ -84,7 +84,7 @@ def delete(request, id):
 def adaptationapi(request):
     if request.method == 'GET':
         adaptations = CoursesHtml.objects.raw('SELECT id,school, COUNT(*) as schoolCount,'
-                                              'COUNT(IF(vaild=1,true,null)) as vaildCount,COUNT(IF(adapted=1,true,null)) as adaptedCount '
+                                              'COUNT(IF(valid=1,true,null)) as validCount,COUNT(IF(adapted=1,true,null)) as adaptedCount '
                                               'FROM timetable_courseshtml GROUP by school ORDER BY created ASC;')
 
         contents = []
@@ -92,7 +92,7 @@ def adaptationapi(request):
             content = dict()
             content['school'] = getSchoolName(one.school)
             content['schoolCount'] = one.schoolCount
-            content['vaildCount'] = one.vaildCount
+            content['validCount'] = one.validCount
             content['adaptedCount'] = one.adaptedCount
             contents.append(content)
 
@@ -120,6 +120,31 @@ def list(request):
         data['html'] = request.POST['html']
         data['url'] = request.POST['url']
         serializer = PostSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse({"code": 201}, status=201)
+        return JsonResponse(serializer.errors, status=400)
+
+
+@csrf_exempt
+def requestAdaptation(request):
+    """
+    List all code snippets, or create a new snippet.
+    """
+    if request.method == 'GET':
+        return JsonResponse({"code": 400}, status=400)
+        # snippets = CoursesHtml.objects.all()
+        # serializer = PostSerializer(snippets, many=True)
+        # return JsonResponse(serializer.data, safe=False)
+
+    elif request.method == 'POST':
+        data = {}
+        data['school'] = request.POST['school']
+        data['type'] = request.POST['type']
+        data['html'] = request.POST['html']
+        data['url'] = request.POST['url']
+        data['contact'] = request.POST['contact']
+        serializer = PostSerializer2(data=data)
         if serializer.is_valid():
             serializer.save()
             return JsonResponse({"code": 201}, status=201)

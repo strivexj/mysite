@@ -6,4 +6,4 @@ from .models import CoursesHtml
 class AdaptationForm(forms.ModelForm):
     class Meta:
         model = CoursesHtml
-        fields = ("school", "html")
+        fields = ("school", "contact", "html")

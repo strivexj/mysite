@@ -9,7 +9,7 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ('school', 'type', 'url', 'html')
 
 
-class AdaptationApiSerializer(serializers.ModelSerializer):
+class PostSerializer2(serializers.ModelSerializer):
     class Meta:
         model = CoursesHtml
-        fields = ('school', 'schoolCount', 'vaildCount', 'adaptedCount')
+        fields = ('school', 'contact', 'type', 'url', 'html')
