@@ -15,4 +15,6 @@ urlpatterns = [
     url(r'^vaild/(?P<id>\d+)$', views.vaild, name='vaild'),
     url(r'^adapted/(?P<id>\d+)$', views.adapted, name='adapted'),
     url(r'^delete/(?P<id>\d+)$', views.delete, name='delete'),
+
+    url(r'^adaptationapi$', views.adaptationapi, name='adaptationapi'),
 ]

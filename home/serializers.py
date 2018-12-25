@@ -7,3 +7,4 @@ class LinkGameRankingSerializer(serializers.ModelSerializer):
     class Meta:
         model = LinkGameRanking
         fields = ('username', 'type', 'record', 'date')
+

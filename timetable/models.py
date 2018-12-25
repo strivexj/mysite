@@ -10,9 +10,12 @@ class CoursesHtml(models.Model):
     html = models.TextField()
     vaild = models.BooleanField(default=False)
     adapted = models.BooleanField(default=False)
+    deleted = models.BooleanField(default=False)
 
     class Meta:
         ordering = ("-created", "-adapted", "-vaild")
 
     def __str__(self):
         return self.school
+
+

@@ -4,11 +4,11 @@ from json import dumps
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 # Create your views here.
-from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
 from home.models import LinkGameRanking
 from home.serializers import LinkGameRankingSerializer
+from home.tool import getSchoolName
 from timetable.forms import AdaptationForm
 from timetable.models import CoursesHtml
 from timetable.serializers import PostSerializer
@@ -36,7 +36,7 @@ def adaptation_list(request):
     if request.GET['pw'] is None or request.GET['pw'] != 'strivexjj123':
         return JsonResponse({"code": 400}, status=400)
 
-    adaptations = CoursesHtml.objects.all()
+    adaptations = CoursesHtml.objects.filter(deleted=False)
 
     return render(request, "adaptation_list.html",
                   {"adaptations": adaptations})
@@ -74,9 +74,32 @@ def vaild(request, id):
 
 def delete(request, id):
     adaptation = get_object_or_404(CoursesHtml, id=id)
-    adaptation.delete()
+    adaptation.deleted = True
+    adaptation.save()
     return HttpResponseRedirect("/adaptationList?pw=strivexjj123")
     # return HttpResponseRedirect(reverse("home:adaptation_list", args={'pw': 'strivexjj123'}))
+
+
+@csrf_exempt
+def adaptationapi(request):
+    if request.method == 'GET':
+        adaptations = CoursesHtml.objects.raw('SELECT id,school, COUNT(*) as schoolCount,'
+                                              'COUNT(IF(vaild=1,true,null)) as vaildCount,COUNT(IF(adapted=1,true,null)) as adaptedCount '
+                                              'FROM timetable_courseshtml GROUP by school ORDER BY created ASC;')
+
+        contents = []
+        for one in adaptations:
+            content = dict()
+            content['school'] = getSchoolName(one.school)
+            content['schoolCount'] = one.schoolCount
+            content['vaildCount'] = one.vaildCount
+            content['adaptedCount'] = one.adaptedCount
+            contents.append(content)
+
+        # return JsonResponse(dumps(contents, ensure_ascii=False), safe=False)
+        return HttpResponse(dumps(contents, ensure_ascii=False), content_type="application/json")
+        # serializer = AdaptationApiSerializer(adaptation, many=True)
+        # return JsonResponse(serializer.data, safe=False)
 
 
 @csrf_exempt
