@@ -83,9 +83,10 @@ def delete(request, id):
 @csrf_exempt
 def adaptationapi(request):
     if request.method == 'GET':
-        adaptations = CoursesHtml.objects.raw('SELECT id,school, COUNT(*) as schoolCount,'
-                                              'COUNT(IF(valid=1,true,null)) as validCount,COUNT(IF(adapted=1,true,null)) as adaptedCount '
-                                              'FROM timetable_courseshtml GROUP by school ORDER BY created ASC;')
+        adaptations = CoursesHtml.objects.raw(
+            'SELECT id,school, COUNT(*) as schoolCount,'
+            'COUNT(IF(valid=1,true,null)) as validCount,COUNT(IF(adapted=1,true,null)) as adaptedCount '
+            'FROM timetable_courseshtml  WHERE deleted=0 GROUP by school ORDER BY created ASC;')
 
         contents = []
         for one in adaptations:
