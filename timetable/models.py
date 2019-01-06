@@ -9,10 +9,10 @@ class CoursesHtml(models.Model):
     type = models.CharField(max_length=10, default='Adaptation')
     url = models.CharField(max_length=100, default='#')
     html = models.TextField()
-    valid = models.BooleanField(default=False)
+    valid = models.BooleanField(default=True)
     adapted = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
-
+    read=models.BooleanField(default=False)
     class Meta:
         ordering = ("adapted", "-type", "-valid", "created")
 

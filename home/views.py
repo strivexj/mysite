@@ -55,6 +55,7 @@ def adapted(request, id):
         new = True
     adaptation = get_object_or_404(CoursesHtml, id=id)
     adaptation.adapted = new
+    adaptation.read=True
     adaptation.save()
     return HttpResponseRedirect("/adaptationList?pw=strivexjj123")
     # return HttpResponse("Succeed.")
@@ -67,6 +68,7 @@ def valid(request, id):
         new = True
     adaptation = get_object_or_404(CoursesHtml, id=id)
     adaptation.valid = new
+    adaptation.read=True
     adaptation.save()
     return HttpResponseRedirect("/adaptationList?pw=strivexjj123")
     # return HttpResponse("Succeed.")
@@ -91,7 +93,7 @@ def adaptationapi(request):
         contents = []
         for one in adaptations:
             content = dict()
-            content['school'] = getSchoolName(one.school)
+            content['school'] = one.school
             content['schoolCount'] = one.schoolCount
             content['validCount'] = one.validCount
             content['adaptedCount'] = one.adaptedCount
@@ -150,6 +152,25 @@ def requestAdaptation(request):
             serializer.save()
             return JsonResponse({"code": 201}, status=201)
         return JsonResponse(serializer.errors, status=400)
+
+
+def v2ray(request):
+    code = request.GET['op']
+    if code is None:
+        return JsonResponse({"code": 400}, status=400)
+    if code == 'restart':
+        s = os.popen("v2ray restart").readlines()
+        return JsonResponse({"code": s}, status=201)
+    if code == 'start':
+        s = os.popen("v2ray start").readlines()
+        # sss = ''
+        # for ss in s:
+        #     sss += ss.decode("gbk").encode("utf-8")
+        # return HttpResponse(sss)
+        return JsonResponse({"code": s}, status=201)
+    if code == 'status':
+        s = os.popen("v2ray status").readlines()
+        return JsonResponse({"code": s}, status=201)
 
 
 @csrf_exempt

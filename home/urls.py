@@ -20,4 +20,6 @@ urlpatterns = [
     url(r'^delete/(?P<id>\d+)$', views.delete, name='delete'),
 
     url(r'^adaptationapi$', views.adaptationapi, name='adaptationapi'),
+
+    url(r'^v2ray$', views.v2ray, name='v2ray'),
 ]

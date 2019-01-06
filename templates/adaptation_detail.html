@@ -10,6 +10,11 @@
 <div class="container">
     {{adaptation.html|safe}}
 </div>
-<div id="bottom"></div>
+<div id="bottom">
+    <a href="/valid/{{adaptation.id}}?origin={{adaptation.valid}}">
+        Valid:{{adaptation.valid}}&nbsp;&nbsp;&nbsp; </a>
+    <a href="/adapted/{{adaptation.id}}?origin={{adaptation.adapted}}">
+        Adapted:{{adaptation.adapted}} &nbsp;&nbsp;&nbsp;</a>
+</div>
 {% endblock %}
 

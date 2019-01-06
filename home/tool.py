@@ -25,5 +25,3 @@ def is_chinese(uchar):
     else:
         return False
 
-
-print(getSchoolName("中国石油1qqqq545大1qq51q2学a胜q利学院qq   105q8506250@qq.com"))
