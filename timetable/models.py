@@ -14,7 +14,7 @@ class CoursesHtml(models.Model):
     deleted = models.BooleanField(default=False)
     read=models.BooleanField(default=False)
     class Meta:
-        ordering = ("adapted", "-type", "-valid", "created")
+        ordering = ("read","adapted", "-type", "-valid", "created")
 
     def __str__(self):
         return self.school

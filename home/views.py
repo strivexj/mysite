@@ -8,7 +8,6 @@ from django.views.decorators.csrf import csrf_exempt
 
 from home.models import LinkGameRanking
 from home.serializers import LinkGameRankingSerializer
-from home.tool import getSchoolName
 from timetable.forms import AdaptationForm
 from timetable.models import CoursesHtml
 from timetable.serializers import PostSerializer, PostSerializer2
@@ -33,8 +32,13 @@ def adaptation_form(request):
 
 
 def adaptation_list(request):
-    if request.GET['pw'] is None or request.GET['pw'] != 'strivexjj123':
-        return JsonResponse({"code": 400}, status=400)
+    ip = request.META.get('REMOTE_ADDR')
+    # 66.42.35.209 157.61.153.198
+    if ip != '66.42.35.209' and ip != '157.61.153.198':
+        return JsonResponse({"Error": "You are not allow to visit this page."}, status=400)
+
+    # if request.GET['pw'] is None or request.GET['pw'] != 'strivexjj123':
+    #     return JsonResponse({"code": 400}, status=400)
 
     adaptations = CoursesHtml.objects.filter(deleted=False)
 
@@ -43,38 +47,56 @@ def adaptation_list(request):
 
 
 def adaptation_detail(request, id):
+    ip = request.META.get('REMOTE_ADDR')
+    if ip != '66.42.35.209' and ip != '157.61.153.198':
+        return JsonResponse({"Error": "You are not allow to visit this page."}, status=400)
+
     adaptation = get_object_or_404(CoursesHtml, id=id)
+    adaptation.read = True
+    adaptation.save()
     return render(request, "adaptation_detail.html",
                   {"adaptation": adaptation})
 
 
 def adapted(request, id):
+    ip = request.META.get('REMOTE_ADDR')
+    if ip != '66.42.35.209' and ip != '157.61.153.198':
+        return JsonResponse({"Error": "You are not allow to visit this page."}, status=400)
+
     if request.GET['origin'] == "True":
         new = False
     else:
         new = True
     adaptation = get_object_or_404(CoursesHtml, id=id)
     adaptation.adapted = new
-    adaptation.read=True
+    adaptation.read = True
     adaptation.save()
     return HttpResponseRedirect("/adaptationList?pw=strivexjj123")
     # return HttpResponse("Succeed.")
 
 
 def valid(request, id):
+    ip = request.META.get('REMOTE_ADDR')
+    if ip != '66.42.35.209' and ip != '157.61.153.198':
+        return JsonResponse({"Error": "You are not allow to visit this page."}, status=400)
+
     if request.GET['origin'] == "True":
         new = False
     else:
         new = True
     adaptation = get_object_or_404(CoursesHtml, id=id)
     adaptation.valid = new
-    adaptation.read=True
+    adaptation.read = True
     adaptation.save()
     return HttpResponseRedirect("/adaptationList?pw=strivexjj123")
     # return HttpResponse("Succeed.")
 
 
 def delete(request, id):
+    ip = request.META.get('REMOTE_ADDR')
+    if ip != '66.42.35.209' and ip != '157.61.153.198':
+        return JsonResponse({"Error": "You are not allow to visit this page."}, status=400)
+
     adaptation = get_object_or_404(CoursesHtml, id=id)
     adaptation.deleted = True
     adaptation.save()
@@ -219,32 +241,19 @@ def linkGameRanking(request):
 def timetable(request):
     content = {}
     content["appname"] = 'Timetable'
-    content["version"] = 245
-    content["title"] = '新版本(V2.4.5)'
+    content["version"] = 2333
+    content["title"] = '新版本(V2.33.3)'
     content["force"] = 139
     content["type"] = 0
     content["alipay"] = """563049812"""
     content["positiveButtonText"] = "下载"
     content["updateurl"] = 'https://www.coolapk.com/apk/com.strivexj.timetable'
     content[
-        "upgradeinfo"] = """更新过后需要重新设置背景, 重新添加单日课程插件。
-新增划词翻译(查词只需一步，直接复制单词即可弹窗翻译)。
-新增通知栏显示课程信息，点击快速查词功能（支持在线查词）
-支持自定义侧拉菜单背景
-支持自定义单词列表自动读音的间隔和次数
-支持倒计时导入导出
-修复成都理工大学以及已知导课BUG。
-修复倒计时插件Bug，支持添加多个倒计时插件
-桌面插件添加日期
-
-历史记录：
-V2.4.0
-新增 新正方系统导课，单节课桌面插件，支持自定义标题栏颜色，优化单词查找功能，修复若干Bug。
-V2.3.2
-新增课程导出txt，starred单词导出txt。
-V2.3.1
-修复导课BUG，增加更多自定义选项，优化桌面插件，新增一位开发大佬。
-Tips:手动导课和用Excel、txt导入的同学，导课成功后最好将课程导出为文本或txt存放以免误删丢失。如果课程信息显示不全，可自行在设置里改变格子高度、字体大小或删减课程名字。"""
+        "upgradeinfo"] = """建议各位大佬更新这个2333版本，手动滑稽
+1.支持倒计时名称自动补全
+2.修复已知BUG
+3.适配重庆大学城市科技学院 邯郸学院  山东科技大学 海南大学  佛山科学技术学院 福建工程学院  广东理工职业学院 河南工业大学 广西大学行健文理学院 北京信息科技大学 中国石油大学胜利学院 南宁学院 苏州大学 华中农业大学 淮阴工学院。
+\nTips:手动导课和用Excel、txt导入的同学，导课成功后最好将课程导出为文本或txt存放以免误删丢失。如果课程信息显示不全，可自行在设置里改变格子高度、字体大小或删减课程名字。"""
 
     return HttpResponse(dumps(content, ensure_ascii=False), content_type="application/json")
 
