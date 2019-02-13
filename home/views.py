@@ -31,24 +31,42 @@ def adaptation_form(request):
                       {"form": adaptation_form})
 
 
+def has_permission(ip):
+    if ip != '66.42.35.209' and '157.61.153'not in ip \
+            and ip != '101.206.168.43' and ip != '127.0.0.1':
+        return False
+    else:
+        return True
+
+
 def adaptation_list(request):
-    ip = request.META.get('REMOTE_ADDR')
-    # 66.42.35.209 157.61.153.198
-    if ip != '66.42.35.209' and ip != '157.61.153.198':
-        return JsonResponse({"Error": "You are not allow to visit this page."}, status=400)
+    ip=request.META.get('REMOTE_ADDR')
+    if has_permission(ip) is not True:
+        return JsonResponse({"Error": "You are not allow to visit this page."+ip}, status=400)
 
-    # if request.GET['pw'] is None or request.GET['pw'] != 'strivexjj123':
-    #     return JsonResponse({"code": 400}, status=400)
-
-    adaptations = CoursesHtml.objects.filter(deleted=False)
+    adaptations = CoursesHtml.objects.raw(
+        'SELECT * FROM `timetable_courseshtml` WHERE deleted=0 ORDER BY `read`,`adapted`,`valid` desc,convert (eas using GBK) desc,convert (school using GBK);')
+    total = 0
+    total_valid = 0
+    last = ''
+    for a in adaptations:
+        total += 1
+        if a.valid and a.school != last and a.adapted == 0:
+            total_valid += 1
+        last = a.school
+        if a.eas == 'Unknown':
+            if "正方软件股份有限公司" in a.html:
+                a.eas = '正方'
+            elif '湖南强智科技发展有限公司' in a.html:
+                a.eas = '强智'
+            a.save()
 
     return render(request, "adaptation_list.html",
-                  {"adaptations": adaptations})
+                  {"adaptations": adaptations, "total_valid": total_valid, "total": total})
 
 
 def adaptation_detail(request, id):
-    ip = request.META.get('REMOTE_ADDR')
-    if ip != '66.42.35.209' and ip != '157.61.153.198':
+    if has_permission(request.META.get('REMOTE_ADDR')) is not True:
         return JsonResponse({"Error": "You are not allow to visit this page."}, status=400)
 
     adaptation = get_object_or_404(CoursesHtml, id=id)
@@ -59,10 +77,8 @@ def adaptation_detail(request, id):
 
 
 def adapted(request, id):
-    ip = request.META.get('REMOTE_ADDR')
-    if ip != '66.42.35.209' and ip != '157.61.153.198':
+    if has_permission(request.META.get('REMOTE_ADDR')) is not True:
         return JsonResponse({"Error": "You are not allow to visit this page."}, status=400)
-
     if request.GET['origin'] == "True":
         new = False
     else:
@@ -76,10 +92,8 @@ def adapted(request, id):
 
 
 def valid(request, id):
-    ip = request.META.get('REMOTE_ADDR')
-    if ip != '66.42.35.209' and ip != '157.61.153.198':
+    if has_permission(request.META.get('REMOTE_ADDR')) is not True:
         return JsonResponse({"Error": "You are not allow to visit this page."}, status=400)
-
     if request.GET['origin'] == "True":
         new = False
     else:
@@ -93,10 +107,8 @@ def valid(request, id):
 
 
 def delete(request, id):
-    ip = request.META.get('REMOTE_ADDR')
-    if ip != '66.42.35.209' and ip != '157.61.153.198':
+    if has_permission(request.META.get('REMOTE_ADDR')) is not True:
         return JsonResponse({"Error": "You are not allow to visit this page."}, status=400)
-
     adaptation = get_object_or_404(CoursesHtml, id=id)
     adaptation.deleted = True
     adaptation.save()
@@ -110,7 +122,7 @@ def adaptationapi(request):
         adaptations = CoursesHtml.objects.raw(
             'SELECT id,school, COUNT(*) as schoolCount,'
             'COUNT(IF(valid=1,true,null)) as validCount,COUNT(IF(adapted=1,true,null)) as adaptedCount '
-            'FROM timetable_courseshtml  WHERE deleted=0 GROUP by school ORDER BY created ASC;')
+            'FROM timetable_courseshtml  WHERE deleted=0 GROUP by school;')
 
         contents = []
         for one in adaptations:
@@ -241,19 +253,19 @@ def linkGameRanking(request):
 def timetable(request):
     content = {}
     content["appname"] = 'Timetable'
-    content["version"] = 2333
-    content["title"] = '新版本(V2.33.3)'
+    content["version"] = 23333
+    content["title"] = '提示'
     content["force"] = 139
     content["type"] = 0
     content["alipay"] = """563049812"""
-    content["positiveButtonText"] = "下载"
-    content["updateurl"] = 'https://www.coolapk.com/apk/com.strivexj.timetable'
+    content["positiveButtonText"] = "谷歌商店下载"
+    content["updateurl"] = 'https://play.google.com/store/apps/details?id=com.strivexj.timetable'
     content[
-        "upgradeinfo"] = """建议各位大佬更新这个2333版本，手动滑稽
-1.支持倒计时名称自动补全
-2.修复已知BUG
-3.适配重庆大学城市科技学院 邯郸学院  山东科技大学 海南大学  佛山科学技术学院 福建工程学院  广东理工职业学院 河南工业大学 广西大学行健文理学院 北京信息科技大学 中国石油大学胜利学院 南宁学院 苏州大学 华中农业大学 淮阴工学院。
-\nTips:手动导课和用Excel、txt导入的同学，导课成功后最好将课程导出为文本或txt存放以免误删丢失。如果课程信息显示不全，可自行在设置里改变格子高度、字体大小或删减课程名字。"""
+        "upgradeinfo"] = """        有部分申请适配的同学的学校是正方/强智教务系统是可以导课的。
+        教务处登录界面下方写了 “正方软件股份有限公司”或“湖南强智科技发展有限公司” 就是正方/强智系统。其他有效申请大概在本月底适配。
+        
+        另外本应用已经上传至谷歌商店，欢迎各位大佬下载（点击下载按钮前往）。
+        点击 不再提醒 再随便点个按钮才能不再出现这个通知～"""
 
     return HttpResponse(dumps(content, ensure_ascii=False), content_type="application/json")
 
@@ -414,7 +426,27 @@ def tv_series_list(request):
         'resource': os.path.join(base, "ieltslistening.json"),
         "description": ""
     }
+    mlist.append(tv)
+    tv = {
+        "id": 13,
+        "tvName": "weixiaolv",
+        "en": "Merriam Webster's Vocabulary Builder",
+        'zh': "韦小绿",
+        "src": "https://img3.doubanio.com/view/subject/r/public/s4339900.jpg",
+        'resource': os.path.join(base, "weixiaolv.json"),
+        "description": ""
+    }
+    mlist.append(tv)
 
+    tv = {
+        "id": 14,
+        "tvName": "wordpowermadeeasy",
+        "en": "Word Power Made Easy",
+        'zh': "Word Power Made Easy",
+        "src": "https://img3.doubanio.com/view/subject/r/public/s6525336.jpg",
+        'resource': os.path.join(base, "wordpowermadeeasy.json"),
+        "description": ""
+    }
     mlist.append(tv)
 
     return HttpResponse(dumps(mlist, ensure_ascii=False),

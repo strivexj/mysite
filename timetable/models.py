@@ -12,9 +12,11 @@ class CoursesHtml(models.Model):
     valid = models.BooleanField(default=True)
     adapted = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
-    read=models.BooleanField(default=False)
+    read = models.BooleanField(default=False)
+    eas = models.CharField(max_length=25, default='Unknown')
+
     class Meta:
-        ordering = ("read","adapted", "-type", "-valid", "created")
+        ordering = ("read", "adapted", "-type", "-valid", "created")
 
     def __str__(self):
         return self.school

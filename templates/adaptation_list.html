@@ -4,14 +4,15 @@
 {% endblock %}
 {% block content %}
 <div class="row text-center vertical-middle-sm">
-    <h2>课表申请适配列表</h2>
+    <h2>课表申请适配列表({{total_valid}}/{{total}})</h2>
 </div>
 <div class="container">
         <table border="1" cellpadding="10" align="center">
             <tr>
                 <td>Read</td>
                 <td>School</td>
-                <td>Type</a> </td>
+                <td>Eas</td>
+                <td>Type</td>
                 <td>Valid</td>
                 <td>Adapted</td>
                 <td>Delete</td>
@@ -21,11 +22,13 @@
             <tr>
                 <td>{{adaptation.read}}</td>
                 <td> <a href="{{adaptation.url}}"> {{adaptation.school}}</a> </td>
+                <td>{{adaptation.eas}}</td>
                 <td> <a href="/adaptationdetail/{{adaptation.id}}#bottom"> {{adaptation.type}}</a> </td>
-                <td> <a href="/valid/{{adaptation.id}}?origin={{adaptation.valid}}">
-                    {{adaptation.valid}}</a> </td>
                 <td> <a href="/adapted/{{adaptation.id}}?origin={{adaptation.adapted}}">
                     {{adaptation.adapted}}</a> </td>
+                <td> <a href="/valid/{{adaptation.id}}?origin={{adaptation.valid}}">
+                    {{adaptation.valid}}</a> </td>
+
                 <td> <a href="/delete/{{adaptation.id}}">
                     Delete </a> </td>
                 <td>{{adaptation.contact}}</td>
